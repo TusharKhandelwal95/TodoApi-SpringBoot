@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/todos")
 public class TodoController {
 
     private static List<Todo> todoList;
@@ -20,15 +21,26 @@ public class TodoController {
         todoList.add(new Todo(3, false, "Read a book", 2));
     }
 
-    @GetMapping("/todos")
+    @GetMapping
     public ResponseEntity<List<Todo>> getTodos() {
         return ResponseEntity.ok(todoList);
     }
 
-    @PostMapping("/todos")
+    @PostMapping
 //    @ResponseStatus(HttpStatus.CREATED)  --> this could be used
     public ResponseEntity<Todo> addTodo(@RequestBody Todo newTodo) {
         todoList.add(newTodo);
         return ResponseEntity.status(HttpStatus.CREATED).body(newTodo);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Todo> getTodoById(@PathVariable Long id){
+        for(Todo todo: todoList){
+            if(todo.getId() == id){
+                return ResponseEntity.ok(todo);
+            }
+        }
+        return ResponseEntity.notFound().build();
+
     }
 }
