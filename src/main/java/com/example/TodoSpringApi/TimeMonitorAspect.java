@@ -10,11 +10,12 @@ import org.springframework.stereotype.Component;
 public class TimeMonitorAspect {
 
     @Around("@annotation(TimeMonitor)")
-    public void logTime(ProceedingJoinPoint joinPoint){
+    public Object logTime(ProceedingJoinPoint joinPoint){
         long startTime = System.currentTimeMillis();  // start time of code
+        Object returnValue = null; // this is to store the return value from fakeTodoService
         try {
             // execute the joint point
-            joinPoint.proceed();
+            returnValue = joinPoint.proceed();
         } catch (Throwable throwable) {
             System.out.println("Something went wrong during execution..");
         } finally {
@@ -23,6 +24,6 @@ public class TimeMonitorAspect {
 
             System.out.println("Execution time of is: " + duration + " ms..");
         }
-
+        return returnValue;
     }
 }
